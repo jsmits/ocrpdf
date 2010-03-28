@@ -1,7 +1,5 @@
-property mytitle : "ocrIt-Acrobat"
-
 on run
-    set the_folder to "Macintosh HD:Users:jsmits:Documents:data:scans:te verwerken:"
+    set the_folder to "Macintosh HD:Users:jsmits:Documents:data:scans:te_verwerken:"
     set the_folder_list to list folder the_folder without invisibles
     -- TODO filter the_folder_list for *.pdf only
     set output_folder to "Macintosh HD:Users:jsmits:Documents:data:scans:verwerkt:"
@@ -31,7 +29,7 @@ on run
                 end tell
                 -- copy and remove the processed PDF file to the output folder
                 do shell script ("/usr/bin/ditto -rsrc " & file_path & " " & destination_path)
-                do shell script ("rm " & file_path)
+                do shell script ("/bin/rm " & file_path)
             end repeat
             quit application "Adobe Acrobat Professional"
         on error errmsg number errnum
@@ -40,10 +38,7 @@ on run
     end timeout
 end run
 
--- I am displaying error messages
+-- logging error messages
 on dsperrmsg(errmsg, errnum)
-	tell me
-		activate
-		display dialog "Sorry, an error occured:" & return & return & errmsg & " (" & errnum & ")" buttons {"Never mind"} default button 1 with icon stop with title mytitle
-	end tell
+    do shell script ("/usr/bin/logger -t localhost.ocrpdf '" & errmsg & " (" & errnum & ")'")
 end dsperrmsg
